@@ -22,9 +22,11 @@ const ProfilePage: React.FC = () => {
     message: '',
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
+  const [profileType, setProfileType] = useState('Desconhecido');
 
   useEffect(() => {
     if (user) {
+      console.log('user_metadata:', user.user_metadata); // <-- Veja se tem "type"
       loadUserProfile();
     }
   }, [user]);
@@ -47,6 +49,7 @@ const ProfilePage: React.FC = () => {
         ...prev,
         name: data?.name || user.user_metadata?.name || ''
       }));
+      setProfileType(data?.type || user.user_metadata?.type || 'Desconhecido');
     } catch (error) {
       console.error('Erro ao carregar perfil:', error);
       setSnackbar({
@@ -254,10 +257,11 @@ const ProfilePage: React.FC = () => {
             <TextField
               label="Perfil"
               fullWidth
-              value={user?.user_metadata?.type === 'admin' ? 'Administrador' : 
-                    user?.user_metadata?.type === 'produtor' ? 'Produtor' : 
-                    user?.user_metadata?.type === 'frigorifico' ? 'Frigorífico' : 
-                    user?.user_metadata?.type === 'tecnico' ? 'Técnico' : 'Desconhecido'}
+              value={
+                profileType === 'admin' ? 'Admin' :
+                profileType === 'tecnico' ? 'Técnico' :
+                'Desconhecido'
+              }
               disabled
               helperText="Para alterar seu perfil, contate um administrador"
             />

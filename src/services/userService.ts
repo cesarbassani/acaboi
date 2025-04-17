@@ -13,7 +13,7 @@ export interface User {
 
 export const getUsers = async (): Promise<User[]> => {
   const { data: users, error } = await supabase
-    .from('users')
+    .from('profiles')
     .select('*')
     .order('name', { ascending: true });
 
@@ -27,7 +27,7 @@ export const getUsers = async (): Promise<User[]> => {
 
 export const getUserById = async (id: string): Promise<User | null> => {
   const { data, error } = await supabase
-    .from('users')
+    .from('profiles')
     .select('*')
     .eq('id', id)
     .single();
@@ -67,7 +67,7 @@ export const createUser = async (email: string, password: string, userData: Part
   };
 
   const { data, error } = await supabase
-    .from('users')
+    .from('profiles')
     .insert(user)
     .select()
     .single();
@@ -100,7 +100,7 @@ export const updateUser = async (id: string, userData: Partial<User>): Promise<U
 
   // 2. Atualizar tabela de usuários
   const { data, error } = await supabase
-    .from('users')
+    .from('profiles')
     .update(userData)
     .eq('id', id)
     .select()
@@ -116,7 +116,7 @@ export const updateUser = async (id: string, userData: Partial<User>): Promise<U
 
 export const toggleUserStatus = async (id: string, active: boolean): Promise<User> => {
   const { data, error } = await supabase
-    .from('users')
+    .from('profiles')
     .update({ active })
     .eq('id', id)
     .select()
