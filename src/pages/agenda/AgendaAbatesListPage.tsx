@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -11,8 +11,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
-  Tooltip,
   CircularProgress,
   Snackbar,
   Alert,
@@ -45,10 +43,9 @@ import { getFrigorificosSelect } from '../../services/escalaService';
 import { getProdutores } from '../../services/produtorService';
 import { getTecnicos } from '../../services/escalaService';
 import AgendaVisualizacaoModal from './AgendaVisualizacaoModal';
-import { formatCurrency, formatDayOfWeek, parseDateLocal, formatDateBR } from '../../utils/formatters';
+import { formatDayOfWeek, parseDateLocal, formatDateBR } from '../../utils/formatters';
 
 const AgendaAbatesListPage: React.FC = () => {
-  const navigate = useNavigate();
   const [agendamentos, setAgendamentos] = useState<AgendaAbate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isAgendaModalOpen, setIsAgendaModalOpen] = useState(false);
@@ -90,7 +87,7 @@ const AgendaAbatesListPage: React.FC = () => {
     loadProdutores();
   }, []);
 
-  const loadAgendamentos = async () => {
+  const loadAgendamentos = useCallback(async () => {
     setIsLoading(true);
     try {
       const filtros = {
@@ -114,7 +111,18 @@ const AgendaAbatesListPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependências:
+    semana, 
+    ano, 
+    diasSemana, 
+    tecnicoId, 
+    frigorificoId, 
+    produtorId,
+    setAgendamentos, 
+    setIsLoading, 
+    setSnackbar
+  ]);
 
   const loadTecnicos = async () => {
     try {

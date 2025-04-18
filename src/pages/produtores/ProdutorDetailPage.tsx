@@ -1,5 +1,5 @@
 // src/pages/produtores/ProdutorDetailPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Email } from '@mui/icons-material';
 import {
@@ -48,7 +48,19 @@ const ProdutorDetailPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  const loadProdutor = async () => {
+  const loadPropriedades = async (produtorId: number) => {
+    setIsLoadingPropriedades(true);
+    try {
+      const data = await getPropriedadesByProdutor(produtorId);
+      setPropriedades(data);
+    } catch (error) {
+      console.error('Erro ao carregar propriedades:', error);
+    } finally {
+      setIsLoadingPropriedades(false);
+    }
+  };
+
+  const loadProdutor = useCallback(async () => {
     if (!id) return;
     
     setIsLoading(true);
@@ -69,23 +81,18 @@ const ProdutorDetailPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const loadPropriedades = async (produtorId: number) => {
-    setIsLoadingPropriedades(true);
-    try {
-      const data = await getPropriedadesByProdutor(produtorId);
-      setPropriedades(data);
-    } catch (error) {
-      console.error('Erro ao carregar propriedades:', error);
-    } finally {
-      setIsLoadingPropriedades(false);
-    }
-  };
+  }, [
+    // Dependências:
+    id,                // ID obtido de useParams ou estado
+    setProdutor,       // Função de estado estável
+    loadPropriedades,  // Deve estar memoizada com useCallback
+    setIsLoading,      // Função de estado estável
+    setSnackbar        // Função de estado estável
+  ]);
 
   useEffect(() => {
     loadProdutor();
-  }, [id]);
+  }, [id, loadProdutor]);
 
   const handleAddPropriedade = () => {
     navigate(`/propriedades/novo?produtorId=${id}`);

@@ -1,5 +1,5 @@
 // src/pages/ProfilePage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, TextField, Button, Paper, Divider, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { useAuth } from '../store/AuthContext';
 import { supabase } from '../services/supabase';
@@ -24,14 +24,7 @@ const ProfilePage: React.FC = () => {
   });
   const [profileType, setProfileType] = useState('Desconhecido');
 
-  useEffect(() => {
-    if (user) {
-      console.log('user_metadata:', user.user_metadata); // <-- Veja se tem "type"
-      loadUserProfile();
-    }
-  }, [user]);
-
-  const loadUserProfile = async () => {
+  const loadUserProfile = useCallback(async () => {
     if (!user?.id) return;
     
     setIsLoading(true);
@@ -60,7 +53,14 @@ const ProfilePage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  },[user?.id, user?.user_metadata]);
+
+  useEffect(() => {
+    if (user) {
+      console.log('user_metadata:', user.user_metadata);
+      loadUserProfile();
+    }
+  }, [user, loadUserProfile]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

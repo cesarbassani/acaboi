@@ -1,5 +1,5 @@
 // src/pages/abates/AbateDetailPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -53,7 +53,7 @@ const AbateDetailPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  const loadAbate = async () => {
+  const loadAbate = useCallback(async () => {
     if (!id) return;
     
     setIsLoading(true);
@@ -72,11 +72,11 @@ const AbateDetailPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     loadAbate();
-  }, [id]);
+  }, [id, loadAbate]);
 
   const handleEdit = () => {
     navigate(`/abates/editar/${id}`);

@@ -1,7 +1,6 @@
 // src/pages/imports/ImportPage.tsx
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Button, Stepper, Step, StepLabel, CircularProgress, Snackbar, Alert } from '@mui/material';
-import { Upload as UploadIcon } from '@mui/icons-material';
 import UploadFileStep from '../../pages/imports/UploadFileStep';
 import ColumnMappingStep from '../../pages/imports/ColumnMappingStep';
 import DataPreviewStep from '../../pages/imports/DataPreviewStep';

@@ -187,8 +187,6 @@ export const validateData = (data: ImportAbateData[]): ValidationError[] => {
 
 // Função para importar dados validados
 export const importData = async (data: ImportAbateData[]): Promise<{ success: number; errors: number }> => {
-  let successCount = 0;
-  let errorCount = 0;
   
   // Usar transação para garantir atomicidade
   const { error } = await supabase.rpc('bulk_insert_abates', {

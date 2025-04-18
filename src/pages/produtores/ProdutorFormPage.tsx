@@ -1,5 +1,5 @@
 // src/pages/produtores/ProdutorFormPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -7,15 +7,10 @@ import {
   Typography,
   TextField,
   Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Snackbar,
   Alert,
   CircularProgress,
   Divider,
-  FormHelperText,
   Stack
 } from '@mui/material';
 import { Save as SaveIcon, ArrowBack as ArrowBackIcon } from '@mui/icons-material';
@@ -24,7 +19,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
   Produtor,
-  ProdutorInput,
   getProdutor,
   createProdutor,
   updateProdutor,
@@ -77,7 +71,7 @@ const ProdutorFormPage: React.FC = () => {
     }
   });
 
-  const loadProdutor = async (produtorId: number) => {
+  const loadProdutor = useCallback(async (produtorId: number) => {
     setIsLoading(true);
     try {
       const data = await getProdutor(produtorId);
@@ -103,13 +97,20 @@ const ProdutorFormPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependencies:
+    setProdutor,   // Stable state setter
+    reset,         // Stable form reset function
+    setIsLoading,  // Stable state setter
+    setSnackbar    // Stable state setter
+    // Note: getProdutor is intentionally omitted as it should be stable
+  ]);
 
   useEffect(() => {
     if (isEditing && id) {
       loadProdutor(parseInt(id));
     }
-  }, [id, isEditing]);
+  }, [id, isEditing, loadProdutor]);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);

@@ -1,5 +1,5 @@
 // src/pages/dashboard/DashboardPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Typography, Paper, Divider, CircularProgress, Snackbar, Alert, MenuItem, FormControl, InputLabel, Select, Button } from '@mui/material';
 import { format, subMonths } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -7,7 +7,6 @@ import { SelectChangeEvent } from '@mui/material';
 import {
   Inventory as InventoryIcon,
   MonetizationOn as MonetizationOnIcon,
-  People as PeopleIcon,
   Pets as PetsIcon,
   DateRange as DateRangeIcon,
   Refresh as RefreshIcon
@@ -34,7 +33,7 @@ const DashboardPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = useCallback(async () => {
     setIsLoading(true);
     try {
       // Calcular datas para o filtro de período
@@ -66,11 +65,20 @@ const DashboardPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependências:
+    selectedPeriod,       // Estado que define o período
+    userType,             // Tipo de usuário (estado/prop)
+    user?.id,             // ID do usuário autenticado
+    setSummary,           // Função de estado estável
+    setRecentActivities,  // Função de estado estável
+    setIsLoading,         // Função de estado estável
+    setSnackbar           // Função de estado estável
+  ]);
 
   useEffect(() => {
     loadDashboardData();
-  }, [selectedPeriod, user, userType]);
+  }, [selectedPeriod, user, userType, loadDashboardData]);
 
   const handlePeriodChange = (event: SelectChangeEvent<string>) => {
     setSelectedPeriod(event.target.value);

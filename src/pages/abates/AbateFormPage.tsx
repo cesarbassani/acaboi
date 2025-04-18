@@ -1,5 +1,5 @@
 // src/pages/abates/AbateFormPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -143,12 +143,26 @@ const AbateFormPage: React.FC = () => {
   const watchQuantidade = watch('quantidade');
   const watchValorArroba = watch('valor_arroba_negociada');
 
+  const loadPropriedades = useCallback(async (produtorId: number) => {
+    try {
+      const data = await getPropriedadesByProdutor(produtorId);
+      setPropriedades(data);
+      
+      // Se existir apenas uma propriedade, seleciona automaticamente
+      if (data.length === 1) {
+        setValue('id_propriedade', data[0].id);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar propriedades:', error);
+    }
+  }, [setPropriedades, setValue]);
+
   useEffect(() => {
     if (watchProdutor !== selectedProdutor && watchProdutor > 0) {
       setSelectedProdutor(watchProdutor);
       loadPropriedades(watchProdutor);
     }
-  }, [watchProdutor]);
+  }, [watchProdutor, loadPropriedades]);
 
   useEffect(() => {
     // Cálculo simples do valor total
@@ -179,21 +193,7 @@ const AbateFormPage: React.FC = () => {
     }
   };
 
-  const loadPropriedades = async (produtorId: number) => {
-    try {
-      const data = await getPropriedadesByProdutor(produtorId);
-      setPropriedades(data);
-      
-      // Se existir apenas uma propriedade, seleciona automaticamente
-      if (data.length === 1) {
-        setValue('id_propriedade', data[0].id);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar propriedades:', error);
-    }
-  };
-
-  const loadAbate = async (abateId: number) => {
+  const loadAbate = useCallback(async (abateId: number) => {
     setIsLoading(true);
     try {
       const data = await getAbate(abateId);
@@ -233,7 +233,15 @@ const AbateFormPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Lista de dependências:
+    setIsLoading,        // Função de estado estável
+    setAbate,            // Função de estado estável
+    setSelectedProdutor, // Função de estado estável
+    loadPropriedades,    // Deve estar memoizada com useCallback
+    reset,               // Função do react-hook-form (geralmente estável)
+    setSnackbar          // Função de estado estável
+  ]);
 
   useEffect(() => {
     loadSelectOptions();
@@ -241,7 +249,7 @@ const AbateFormPage: React.FC = () => {
     if (isEditing && id) {
       loadAbate(parseInt(id));
     }
-  }, [id, isEditing]);
+  }, [id, isEditing, loadAbate]);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);

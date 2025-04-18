@@ -1,5 +1,5 @@
 // src/pages/frigorificos/FrigorificoDetailPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -13,11 +13,6 @@ import {
   Card,
   CardContent,
   Stack,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Tooltip
 } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
@@ -25,10 +20,7 @@ import {
   Delete as DeleteIcon,
   LocationOn as LocationOnIcon,
   Business as BusinessIcon,
-  Person as PersonIcon,
   Email as EmailIcon,
-  Add as AddIcon,
-  Store as StoreIcon
 } from '@mui/icons-material';
 import { Frigorifico, getFrigorifico, deleteFrigorifico } from '../../services/frigorificoService';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
@@ -48,7 +40,7 @@ const FrigorificoDetailPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  const loadFrigorifico = async () => {
+  const loadFrigorifico = useCallback(async () => {
     if (!id) return;
     
     setIsLoading(true);
@@ -75,11 +67,18 @@ const FrigorificoDetailPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependências:
+    id,                // ID obtido de useParams ou estado
+    setFrigorifico,    // Função de estado estável
+    setUsuario,        // Função de estado estável
+    setIsLoading,      // Função de estado estável
+    setSnackbar        // Função de estado estável
+  ]);
 
   useEffect(() => {
     loadFrigorifico();
-  }, [id]);
+  }, [id, loadFrigorifico]);
 
   const handleEdit = () => {
     navigate(`/frigorificos/editar/${id}`);

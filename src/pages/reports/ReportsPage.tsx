@@ -1,8 +1,6 @@
 // src/pages/reports/ReportsPage.tsx
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper, Button, MenuItem, TextField, Tab, Tabs, CircularProgress, Snackbar, Alert } from '@mui/material';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 import {
   PictureAsPdf as PictureAsPdfIcon,
   TableChart as TableChartIcon
@@ -10,8 +8,6 @@ import {
 import { 
   DataGrid, 
   GridColDef,
-  GridValueGetter,
-  GridValueFormatter,
   GridCellParams
 } from '@mui/x-data-grid';
 

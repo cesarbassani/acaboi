@@ -22,7 +22,6 @@ import { useAuth } from '../../store/AuthContext';
 
 const PropriedadesPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [propriedades, setPropriedades] = useState<Propriedade[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

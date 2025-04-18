@@ -1,5 +1,5 @@
 // src/pages/frigorificos/FrigorificoFormPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -7,15 +7,10 @@ import {
   Typography,
   TextField,
   Button,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
   Snackbar,
   Alert,
   CircularProgress,
   Divider,
-  FormHelperText,
   Stack
 } from '@mui/material';
 import {
@@ -27,7 +22,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
   Frigorifico,
-  FrigorificoInput,
   getFrigorifico,
   createFrigorifico,
   updateFrigorifico
@@ -83,7 +77,7 @@ const FrigorificoFormPage: React.FC = () => {
     console.log("Erros de validação:", errors);
   }, [errors]);
 
-  const loadFrigorifico = async (frigorificoId: number) => {
+  const loadFrigorifico = useCallback(async  (frigorificoId: number) => {
     setIsLoading(true);
     try {
       const data = await getFrigorifico(frigorificoId);
@@ -114,7 +108,13 @@ const FrigorificoFormPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependências:
+    setFrigorifico,     // Função de estado estável
+    reset,              // Função do react-hook-form (estável)
+    setIsLoading,       // Função de estado estável
+    setSnackbar         // Função de estado estável
+  ]);
 
   useEffect(() => {
     console.log("ID do parâmetro:", id);
@@ -123,7 +123,7 @@ const FrigorificoFormPage: React.FC = () => {
     if (isEditing && id) {
       loadFrigorifico(parseInt(id));
     }
-  }, [id, isEditing]);
+  }, [id, isEditing, loadFrigorifico]);
 
   // Função de debug para o submit
   const handleFormSubmit = (data: FormData) => {

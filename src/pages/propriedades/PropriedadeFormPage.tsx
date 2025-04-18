@@ -35,7 +35,6 @@ import {
   getProdutoresSelect,
   getClassificacoes
 } from '../../services/propriedadeService';
-import { useAuth } from '../../store/AuthContext';
 
 interface FormData {
   id_produtor: number;

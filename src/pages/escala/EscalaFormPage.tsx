@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Resolver } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
@@ -31,11 +31,6 @@ import {
   Save as SaveIcon,
   ArrowBack as ArrowBackIcon,
   Person as PersonIcon,
-  Business as BusinessIcon,
-  Home as HomeIcon,
-  Assignment as AssignmentIcon,
-  EventNote as EventNoteIcon,
-  LocalShipping as LocalShippingIcon,
   AttachMoney as AttachMoneyIcon
 } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
@@ -158,14 +153,44 @@ const EscalaFormPage: React.FC = () => {
   });
   
   const produtorId = watch('id_produtor');
+
+  const loadPropriedadesByProdutor = useCallback(async (produtorId: number) => {
+    try {
+      const data = await getPropriedadesByProdutor(produtorId);
+      setPropriedades(data);
+      
+      // Se houver apenas uma propriedade, seleciona automaticamente
+      if (data.length === 1) {
+        setValue('id_propriedade', data[0].id);
+        
+        // Se o município não estiver preenchido, preenche com a cidade da propriedade
+        if (!watch('municipio')) {
+          setValue('municipio', data[0].cidade || '');
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao carregar propriedades do produtor:', error);
+      setSnackbar({
+        open: true,
+        message: 'Erro ao carregar propriedades do produtor. Tente novamente.',
+        severity: 'error'
+      });
+    }
+  }, [
+    // Dependências:
+    setPropriedades, // Função de estado estável
+    setValue,         // Função do react-hook-form (estável)
+    watch,            // Função do react-hook-form (estável)
+    setSnackbar       // Função de estado estável
+  ]);
   
   useEffect(() => {
     if (produtorId && produtorId > 0) {
       loadPropriedadesByProdutor(produtorId);
     }
-  }, [produtorId]);
+  }, [produtorId, loadPropriedadesByProdutor]);
   
-  const loadEscalaAbate = async (escalaId: number) => {
+  const loadEscalaAbate = useCallback(async  (escalaId: number) => {
     setIsLoading(true);
     try {
       const data = await getEscalaAbate(escalaId);
@@ -209,7 +234,14 @@ const EscalaFormPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependências:
+    setEscala,                   // Função de estado estável
+    reset,                       // Função do react-hook-form (estável)
+    loadPropriedadesByProdutor,  // Deve estar memoizada com useCallback
+    setIsLoading,                // Função de estado estável
+    setSnackbar                  // Função de estado estável
+  ]);
 
   const loadProdutores = async () => {
     try {
@@ -220,44 +252,6 @@ const EscalaFormPage: React.FC = () => {
       setSnackbar({
         open: true,
         message: 'Erro ao carregar produtores. Tente novamente.',
-        severity: 'error'
-      });
-    }
-  };
-
-  const loadPropriedades = async () => {
-    try {
-      const data = await getPropriedades();
-      setPropriedades(data);
-    } catch (error) {
-      console.error('Erro ao carregar propriedades:', error);
-      setSnackbar({
-        open: true,
-        message: 'Erro ao carregar propriedades. Tente novamente.',
-        severity: 'error'
-      });
-    }
-  };
-
-  const loadPropriedadesByProdutor = async (produtorId: number) => {
-    try {
-      const data = await getPropriedadesByProdutor(produtorId);
-      setPropriedades(data);
-      
-      // Se houver apenas uma propriedade, seleciona automaticamente
-      if (data.length === 1) {
-        setValue('id_propriedade', data[0].id);
-        
-        // Se o município não estiver preenchido, preenche com a cidade da propriedade
-        if (!watch('municipio')) {
-          setValue('municipio', data[0].cidade || '');
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao carregar propriedades do produtor:', error);
-      setSnackbar({
-        open: true,
-        message: 'Erro ao carregar propriedades do produtor. Tente novamente.',
         severity: 'error'
       });
     }

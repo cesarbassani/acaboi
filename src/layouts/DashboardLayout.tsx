@@ -28,8 +28,6 @@ import {
   LocationOn as LocationOnIcon,
   Inventory as InventoryIcon,
   Settings as SettingsIcon,
-  BarChart as BarChartIcon,
-  Description as DescriptionIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,
   ChevronLeft as ChevronLeftIcon,

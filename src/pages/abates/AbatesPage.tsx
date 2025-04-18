@@ -9,7 +9,6 @@ import {
   Alert,
   Fab,
   Tooltip,
-  Chip
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -31,7 +30,6 @@ const formatCurrency = (value: number) => {
 
 const AbatesPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const [abates, setAbates] = useState<Abate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

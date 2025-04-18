@@ -1,9 +1,8 @@
 // src/pages/propriedades/PropriedadeDetailPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
-  Paper,
   Typography,
   Button,
   Divider,
@@ -47,7 +46,7 @@ const PropriedadeDetailPage: React.FC = () => {
     return acc;
   }, {} as {[key: string]: string});
 
-  const loadPropriedade = async () => {
+  const loadPropriedade = useCallback(async () => {
     if (!id) return;
     
     setIsLoading(true);
@@ -66,11 +65,18 @@ const PropriedadeDetailPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependencies:
+    id,              // The ID parameter (from URL or props)
+    setPropriedade,  // State setter function
+    setIsLoading,    // State setter function
+    setSnackbar      // State setter function
+    // getPropriedade is intentionally omitted (should be stable)
+  ]);
 
   useEffect(() => {
     loadPropriedade();
-  }, [id]);
+  }, [id, loadPropriedade]);
 
   const handleEdit = () => {
     navigate(`/propriedades/editar/${id}`);

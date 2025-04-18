@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formatCurrency } from '../../utils/formatters';
 import {
@@ -43,7 +43,7 @@ const EscalaDetailPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  const loadEscalaAbate = async () => {
+  const loadEscalaAbate = useCallback(async () => {
     if (!id) return;
     
     setIsLoading(true);
@@ -62,11 +62,18 @@ const EscalaDetailPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    // Dependências:
+    id,             // ID obtido de useParams ou estado
+    setEscala,      // Função de estado estável
+    setIsLoading,   // Função de estado estável
+    setSnackbar     // Função de estado estável
+  ]);
+  
 
   useEffect(() => {
     loadEscalaAbate();
-  }, [id]);
+  }, [id, loadEscalaAbate]);
 
   const handleEdit = () => {
     navigate(`/escala/editar/${id}`);
