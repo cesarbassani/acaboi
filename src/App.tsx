@@ -8,7 +8,6 @@ import { AuthProvider, useAuth } from './store/AuthContext';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import DashboardLayout from './layouts/DashboardLayout';
-import Dashboard from './pages/dashboard/Dashboard';
 import ProdutoresPage from './pages/produtores/ProdutoresPage';
 import ProdutorFormPage from './pages/produtores/ProdutorFormPage';
 import ProdutorDetailPage from './pages/produtores/ProdutorDetailPage';

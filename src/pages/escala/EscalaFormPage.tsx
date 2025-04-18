@@ -51,7 +51,7 @@ import {
   getTecnicos
 } from '../../services/escalaService';
 import { getProdutores } from '../../services/produtorService';
-import { getPropriedadesByProdutor, getPropriedades } from '../../services/propriedadeService';
+import { getPropriedadesByProdutor } from '../../services/propriedadeService';
 
 interface FormData {
   tipo_servico: string;

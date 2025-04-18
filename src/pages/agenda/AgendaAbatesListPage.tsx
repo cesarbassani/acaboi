@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -63,9 +62,6 @@ const AgendaAbatesListPage: React.FC = () => {
   const [semanas, setSemanas] = useState<number[]>([]);
   const [anos] = useState<number[]>([getCurrentYear() - 1, getCurrentYear(), getCurrentYear() + 1]);
   const [diasDaSemana] = useState(getDaysOfWeek());
-  const [tecnicos, setTecnicos] = useState<any[]>([]);
-  const [frigorificos, setFrigorificos] = useState<any[]>([]);
-  const [produtores, setProdutores] = useState<any[]>([]);
   
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -127,7 +123,6 @@ const AgendaAbatesListPage: React.FC = () => {
   const loadTecnicos = async () => {
     try {
       const data = await getTecnicos();
-      setTecnicos(data);
     } catch (error) {
       console.error('Erro ao carregar técnicos:', error);
     }
@@ -136,7 +131,6 @@ const AgendaAbatesListPage: React.FC = () => {
   const loadFrigorificos = async () => {
     try {
       const data = await getFrigorificosSelect();
-      setFrigorificos(data);
     } catch (error) {
       console.error('Erro ao carregar frigoríficos:', error);
     }
@@ -145,7 +139,6 @@ const AgendaAbatesListPage: React.FC = () => {
   const loadProdutores = async () => {
     try {
       const data = await getProdutores();
-      setProdutores(data);
     } catch (error) {
       console.error('Erro ao carregar produtores:', error);
     }

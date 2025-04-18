@@ -48,7 +48,7 @@ const ProdutorDetailPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  const loadPropriedades = async (produtorId: number) => {
+  const loadPropriedades = useCallback(async (produtorId: number) => {
     setIsLoadingPropriedades(true);
     try {
       const data = await getPropriedadesByProdutor(produtorId);
@@ -58,7 +58,7 @@ const ProdutorDetailPage: React.FC = () => {
     } finally {
       setIsLoadingPropriedades(false);
     }
-  };
+  }, []);
 
   const loadProdutor = useCallback(async () => {
     if (!id) return;

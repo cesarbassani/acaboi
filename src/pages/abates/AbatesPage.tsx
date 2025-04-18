@@ -17,7 +17,6 @@ import {
 import { DataTable } from '../../components/DataTable';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Abate, getAbates, deleteAbate } from '../../services/abateService';
-import { useAuth } from '../../store/AuthContext';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 

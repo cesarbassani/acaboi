@@ -1,5 +1,5 @@
 // src/pages/users/UserFormPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Typography, TextField, Button, MenuItem, FormControl, InputLabel, Select, Switch, FormControlLabel, Paper, Divider, CircularProgress, Snackbar, Alert } from '@mui/material';
 import { createUser, getUserById, updateUser, User } from '../../services/userService';
@@ -38,22 +38,9 @@ const UserFormPage: React.FC = () => {
     severity: 'success' as 'success' | 'error' | 'info' | 'warning'
   });
 
-  useEffect(() => {
-    // Verificar se o usuário atual é um administrador
-    if (currentUser?.user_metadata?.type !== 'admin') {
-      navigate('/dashboard');
-      return;
-    }
-    
-    // Carregar dados do usuário se for edição
-    if (!isNewUser) {
-      loadUser();
-    }
-  }, [id, currentUser]);
-
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     if (!id) return;
-    
+  
     setIsLoading(true);
     try {
       const user = await getUserById(id);
@@ -77,7 +64,20 @@ const UserFormPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    // Verificar se o usuário atual é um administrador
+    if (currentUser?.user_metadata?.type !== 'admin') {
+      navigate('/dashboard');
+      return;
+    }
+    
+    // Carregar dados do usuário se for edição
+    if (!isNewUser) {
+      loadUser();
+    }
+  }, [id, currentUser,  isNewUser, loadUser, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

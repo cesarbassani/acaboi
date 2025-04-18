@@ -18,7 +18,6 @@ import {
 import { DataTable } from '../../components/DataTable';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { Propriedade, getPropriedades, deletePropriedade } from '../../services/propriedadeService';
-import { useAuth } from '../../store/AuthContext';
 
 const PropriedadesPage: React.FC = () => {
   const navigate = useNavigate();
