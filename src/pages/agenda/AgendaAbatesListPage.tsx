@@ -38,9 +38,6 @@ import {
   getWeeksInYear,
   getDaysOfWeek
 } from '../../services/agendaAbatesService';
-import { getFrigorificosSelect } from '../../services/escalaService';
-import { getProdutores } from '../../services/produtorService';
-import { getTecnicos } from '../../services/escalaService';
 import AgendaVisualizacaoModal from './AgendaVisualizacaoModal';
 import { formatDayOfWeek, parseDateLocal, formatDateBR } from '../../utils/formatters';
 
@@ -72,16 +69,6 @@ const AgendaAbatesListPage: React.FC = () => {
   useEffect(() => {
     setSemanas(getWeeksInYear(ano));
   }, [ano]);
-
-  useEffect(() => {
-    loadAgendamentos();
-  }, [semana, ano, diasSemana, tecnicoId, frigorificoId, produtorId]);
-
-  useEffect(() => {
-    loadTecnicos();
-    loadFrigorificos();
-    loadProdutores();
-  }, []);
 
   const loadAgendamentos = useCallback(async () => {
     setIsLoading(true);
@@ -119,6 +106,16 @@ const AgendaAbatesListPage: React.FC = () => {
     setIsLoading, 
     setSnackbar
   ]);
+
+  useEffect(() => {
+    loadAgendamentos();
+  }, [loadAgendamentos]);
+
+  useEffect(() => {
+    loadTecnicos();
+    loadFrigorificos();
+    loadProdutores();
+  }, []);
 
   const loadTecnicos = async () => {
     try {
