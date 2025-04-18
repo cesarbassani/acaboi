@@ -162,7 +162,7 @@ const AbateFormPage: React.FC = () => {
       setSelectedProdutor(watchProdutor);
       loadPropriedades(watchProdutor);
     }
-  }, [watchProdutor, loadPropriedades]);
+  }, [watchProdutor, selectedProdutor, loadPropriedades]);
 
   useEffect(() => {
     // Cálculo simples do valor total

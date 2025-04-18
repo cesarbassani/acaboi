@@ -122,7 +122,6 @@ const AgendaAbatesListPage: React.FC = () => {
 
   const loadTecnicos = async () => {
     try {
-      const data = await getTecnicos();
     } catch (error) {
       console.error('Erro ao carregar técnicos:', error);
     }
@@ -130,7 +129,6 @@ const AgendaAbatesListPage: React.FC = () => {
 
   const loadFrigorificos = async () => {
     try {
-      const data = await getFrigorificosSelect();
     } catch (error) {
       console.error('Erro ao carregar frigoríficos:', error);
     }
@@ -138,7 +136,6 @@ const AgendaAbatesListPage: React.FC = () => {
 
   const loadProdutores = async () => {
     try {
-      const data = await getProdutores();
     } catch (error) {
       console.error('Erro ao carregar produtores:', error);
     }

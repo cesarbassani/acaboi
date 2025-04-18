@@ -322,7 +322,7 @@ const EscalaFormPage: React.FC = () => {
         setValue('id_propriedade', parseInt(propriedadeIdParam));
       }
     }
-  }, [id, isEditing, produtorIdParam, propriedadeIdParam, setValue]);
+  }, [id, isEditing, produtorIdParam, loadEscalaAbate, propriedadeIdParam, setValue]);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);

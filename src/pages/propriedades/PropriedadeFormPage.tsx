@@ -1,5 +1,5 @@
 // src/pages/propriedades/PropriedadeFormPage.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Resolver } from 'react-hook-form';
 import {
@@ -95,7 +95,7 @@ const PropriedadeFormPage: React.FC = () => {
     }
   });
   
-  const loadPropriedade = async (propriedadeId: number) => {
+  const loadPropriedade = useCallback(async (propriedadeId: number) => {
     setIsLoading(true);
     try {
       const data = await getPropriedade(propriedadeId);
@@ -124,7 +124,7 @@ const PropriedadeFormPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [reset, setPropriedade, setIsLoading, setSnackbar]);
 
   const loadProdutores = async () => {
     try {
@@ -149,7 +149,7 @@ const PropriedadeFormPage: React.FC = () => {
       // Pré-selecionar o produtor se vindo da tela de detalhes do produtor
       setValue('id_produtor', parseInt(produtorIdParam));
     }
-  }, [id, isEditing, produtorIdParam, setValue]);
+  }, [id, isEditing, produtorIdParam, loadPropriedade, setValue]);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
