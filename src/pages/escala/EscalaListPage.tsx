@@ -97,8 +97,11 @@ const EscalaListPage: React.FC = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+  const formatDate = (isoString: string) => {
+    // "2025-04-19T00:00:00.000Z" → "2025-04-19"
+    const [datePart] = isoString.split('T');
+    const [year, month, day] = datePart.split('-');
+    return `${day}/${month}/${year}`;
   };
 
   return (
@@ -147,6 +150,7 @@ const EscalaListPage: React.FC = () => {
                 <TableCell  sx={{ fontWeight: 'bold' }}>Protocolo</TableCell>
                 <TableCell  sx={{ fontWeight: 'bold' }}>Preço/@</TableCell>
                 <TableCell  sx={{ fontWeight: 'bold' }}>Preço/Cab</TableCell>
+                <TableCell  sx={{ fontWeight: 'bold' }}>Responsável</TableCell>
                 <TableCell  sx={{ fontWeight: 'bold' }}>Ações</TableCell>
               </TableRow>
             </TableHead>
@@ -180,6 +184,7 @@ const EscalaListPage: React.FC = () => {
                     <TableCell>
                       {formatCurrency(escala.preco_cabeca)}
                     </TableCell>
+                    <TableCell>{escala.tecnico_responsavel?.usuario?.name}</TableCell>
                     <TableCell>
                       <Box sx={{ display: 'flex' }}>
                         <Tooltip title="Visualizar">

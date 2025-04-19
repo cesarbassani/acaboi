@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Resolver } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
+import Autocomplete from '@mui/material/Autocomplete'
 import {
   Box,
   Paper,
@@ -87,12 +88,12 @@ const schema = yup.object({
   categoria: yup.string().required('Categoria é obrigatória'),
   id_produtor: yup.number().required('Produtor é obrigatório'),
   id_propriedade: yup.number().required('Propriedade é obrigatória'),
-  municipio: yup.string().required('Município é obrigatório'),
+  municipio: yup.string().nullable(),
   id_protocolo: yup.number().nullable().transform((value) => (isNaN(value) ? null : value)),
   preco_arroba: yup.number().nullable().transform((value) => (isNaN(value) ? null : value)),
   preco_cabeca: yup.number().nullable().transform((value) => (isNaN(value) ? null : value)),
-  tipo_negociacao: yup.string().required('Tipo de negociação é obrigatório'),
-  forma_pagamento: yup.string().required('Forma de pagamento é obrigatória'),
+  tipo_negociacao: yup.string().nullable(),
+  forma_pagamento: yup.string().nullable(),
   id_tecnico_negociador: yup.number().nullable().transform((value) => (isNaN(value) ? null : value)),
   id_tecnico_responsavel: yup.number().nullable(),
   observacoes: yup.string().nullable(),
@@ -288,6 +289,7 @@ const EscalaFormPage: React.FC = () => {
   const loadTecnicos = async () => {
     try {
       const data = await getTecnicos(); // Usando getTecnicos em vez de getTecnicosSelect
+      console.log('>>> data de técnicos:', data)    // <–– veja o que vem aqui
       setTecnicos(data);
       setTecnicosDisponiveis(data);
     } catch (error) {
@@ -647,55 +649,54 @@ const EscalaFormPage: React.FC = () => {
 
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
                   <Box sx={{ flexGrow: 1, flexBasis: { xs: '100%', md: '47%' } }}>
-                    <Controller
-                      name="id_produtor"
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.id_produtor} disabled={isSubmitting}>
-                          <InputLabel id="produtor-label">Produtor</InputLabel>
-                          <Select
-                            {...field}
-                            labelId="produtor-label"
+                  <Controller
+                    name="id_produtor"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <Autocomplete
+                        options={produtores}
+                        getOptionLabel={(option) => option.nome}
+                        value={produtores.find(p => p.id === value) || null}
+                        onChange={(_, newValue) => onChange(newValue?.id ?? null)}
+                        disabled={isSubmitting}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
                             label="Produtor"
-                          >
-                            {produtores.map((produtor) => (
-                              <MenuItem key={produtor.id} value={produtor.id}>
-                                {produtor.nome}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {errors.id_produtor && (
-                            <FormHelperText>{errors.id_produtor.message}</FormHelperText>
-                          )}
-                        </FormControl>
-                      )}
-                    />
+                            error={!!errors.id_produtor}
+                            helperText={errors.id_produtor?.message}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    )}
+                  />
                   </Box>
 
                   <Box sx={{ flexGrow: 1, flexBasis: { xs: '100%', md: '47%' } }}>
-                    <Controller
-                      name="id_propriedade"
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.id_propriedade} disabled={isSubmitting}>
-                          <InputLabel id="propriedade-label">Propriedade</InputLabel>
-                          <Select
-                            {...field}
-                            labelId="propriedade-label"
+                  <Controller
+                    name="id_propriedade"
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <Autocomplete
+                        options={propriedades}
+                        getOptionLabel={(option) => option.nome}
+                        isOptionEqualToValue={(opt, val) => opt.id === val?.id}
+                        value={propriedades.find(p => p.id === value) || null}
+                        onChange={(_, newValue) => onChange(newValue?.id ?? null)}
+                        disabled={isSubmitting || propriedades.length === 0}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
                             label="Propriedade"
-                          >
-                            {propriedades.map((propriedade) => (
-                              <MenuItem key={propriedade.id} value={propriedade.id}>
-                                {propriedade.nome}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {errors.id_propriedade && (
-                            <FormHelperText>{errors.id_propriedade.message}</FormHelperText>
-                          )}
-                        </FormControl>
-                      )}
-                    />
+                            error={!!errors.id_propriedade}
+                            helperText={errors.id_propriedade?.message}
+                            fullWidth
+                          />
+                        )}
+                      />
+                    )}
+                  />
                   </Box>
                 </Box>
 
@@ -719,6 +720,7 @@ const EscalaFormPage: React.FC = () => {
                             labelId="tipo-negociacao-label"
                             label="Tipo de Negociação"
                           >
+                            <MenuItem value="">– Nenhum –</MenuItem>
                             {tiposNegociacao.map((tipo) => (
                               <MenuItem key={tipo.value} value={tipo.value}>
                                 {tipo.label}
@@ -745,6 +747,7 @@ const EscalaFormPage: React.FC = () => {
                             labelId="forma-pagamento-label"
                             label="Forma de Pagamento"
                           >
+                            <MenuItem value="">– Nenhum –</MenuItem>
                             {formasPagamento.map((forma) => (
                               <MenuItem key={forma.value} value={forma.value}>
                                 {forma.label}
