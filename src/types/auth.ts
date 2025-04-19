@@ -9,12 +9,12 @@ export const userRoleLabels: Record<UserRole, string> = {
 export const userRolePermissions: Record<UserRole, string[]> = {
   admin: ['all'], // Admin tem acesso completo
   tecnico: [
-    'dashboard', 
+    // 'dashboard', 
     'escala',
     'agenda',
-    'abates', 
-    'importar', 
-    'relatorios'
+    // 'abates', 
+    // 'importar', 
+    // 'relatorios'
   ]
 };
 
