@@ -17,6 +17,7 @@ import {
 import { Close as CloseIcon } from '@mui/icons-material';
 import { AgendaAbate, getDateRangeForWeek } from '../../services/agendaAbatesService';
 import { parseDateLocal } from '../../utils/formatters';
+import CompartilharAgendaButton from './components/CompartilharAgendaButton';
 
 interface AgendaVisualizacaoModalProps {
   open: boolean;
@@ -105,6 +106,7 @@ const AgendaVisualizacaoModal: React.FC<AgendaVisualizacaoModalProps> = ({
           <Typography>
             Total: <Chip label={totalGeral} size="small" sx={{ ml: 1, bgcolor: 'white', color: 'black' }} />
           </Typography>
+          <CompartilharAgendaButton semana={semana} ano={ano} />
           <IconButton onClick={onClose} color="inherit" size="small">
             <CloseIcon />
           </IconButton>

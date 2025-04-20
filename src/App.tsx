@@ -31,6 +31,7 @@ import EscalaFormPage from './pages/escala/EscalaFormPage';
 import EscalaDetailPage from './pages/escala/EscalaDetailPage';
 import AgendaAbatesListPage from './pages/agenda/AgendaAbatesListPage';
 import { Box, CircularProgress, Typography } from '@mui/material';
+import AgendaPublicaPage from './pages/agenda/AgendaPublicaPage';
 
 // Cria um cliente de query
 const queryClient = new QueryClient();
@@ -101,6 +102,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/agenda_view" element={<AgendaPublicaPage />} />
               
               {/* Rotas protegidas com o layout do dashboard */}
               <Route path="/" element={
